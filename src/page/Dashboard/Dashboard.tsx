@@ -11,10 +11,9 @@ type TDashBoard ={
 }
 
 
-export function Dashboard({isDrawerOpen,setIsDrawerOpen}:TDashBoard) {
+export function Dashboard() {
   
   return (
-    <Layout isDrawerOpen={isDrawerOpen} setIsDrawerOpen={setIsDrawerOpen}>
     <div className="dashboard">
       <h1 className="dashboard-title">Dashboard</h1>
       <div className="stats-grid">
@@ -57,6 +56,6 @@ export function Dashboard({isDrawerOpen,setIsDrawerOpen}:TDashBoard) {
         </div>
       </div>
     </div>
-    </Layout>
+  
   )
 }
