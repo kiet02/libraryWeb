@@ -39,11 +39,25 @@ export function Drawer({ isOpen }: DrawerProps) {
                 isActive={location.pathname === '/books'}
                  
               />
-              <NavItem icon={<PenToolIcon size={18} />} label="Authors" />
-              <NavItem icon={<BookmarkIcon size={18} />} label="Categories" />
-              <NavItem icon={<UsersIcon size={18} />} label="Users" to="/users"
-                isActive={location.pathname === '/users'}/>
-              <NavItem icon={<SettingsIcon size={18} />} label="Admin" />
+              <NavItem icon={<PenToolIcon size={18} />} 
+              label="Authors" 
+              to="/authors"
+              isActive={location.pathname === '/authors'}/>
+
+              <NavItem icon={<BookmarkIcon size={18} />} 
+              label="Categories" 
+              to="/categories"
+              isActive={location.pathname === '/categories'} />
+
+              <NavItem icon={<UsersIcon size={18} />} 
+              label="Users" 
+              to="/users"
+              isActive={location.pathname === '/users'}/>
+
+              <NavItem icon={<SettingsIcon size={18} />} 
+              label="Admin"
+              to="/admin"
+              isActive={location.pathname === '/admin'} />
             </ul>
           </nav>
         </>
