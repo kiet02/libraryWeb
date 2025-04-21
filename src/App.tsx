@@ -1,9 +1,7 @@
 import { useState } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { Dashboard } from './page/Dashboard/Dashboard'
-import Login from './page/Auth/Login'
-import Books from './page/Book/Book'
 import { Layout } from './component/Drawer/Layout'
+import Pages from './page'
 
 export function App() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(true)
@@ -11,10 +9,10 @@ export function App() {
   return (
     <Router>
       <Routes>
-        {/* Route login riêng không có layout */}
-        <Route path="/" element={<Login />} />
+        {/* Route riêng cho Login */}
+        <Route path="/" element={<Pages.Login />} />
 
-        {/* Routes có layout dùng Outlet */}
+        {/* Các route cần Layout */}
         <Route
           path="/"
           element={
@@ -24,8 +22,12 @@ export function App() {
             />
           }
         >
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="books" element={<Books />} />
+          <Route path="dashboard" element={<Pages.Dashboard />} />
+          <Route path="books" element={<Pages.Books />} />
+          <Route path="authors" element={<Pages.Authors />} />
+          <Route path="categories" element={<Pages.Categories />} />
+          <Route path="users" element={<Pages.Users />} />
+          <Route path="admin" element={<Pages.Admins />} />
         </Route>
       </Routes>
     </Router>

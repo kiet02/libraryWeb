@@ -2,7 +2,7 @@ import React from 'react'
 import './style/login.css'
 import { useNavigate } from 'react-router-dom'
 
-const Login = () => {
+export function Login(){
     const navigate = useNavigate();
 
     const handleLogin = (e: React.FormEvent) => {
@@ -46,4 +46,4 @@ const Login = () => {
   )
 }
 
-export default Login
+

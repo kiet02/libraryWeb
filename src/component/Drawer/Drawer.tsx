@@ -3,6 +3,10 @@ import { NavItem } from './NavItem'
 import {
   HomeIcon,
   BookIcon,
+  PenToolIcon,
+  BookmarkIcon,
+  UsersIcon,
+  SettingsIcon,
 } from 'lucide-react'
 import './style/Drawer.css'
 import { useLocation } from 'react-router-dom'
@@ -33,7 +37,13 @@ export function Drawer({ isOpen }: DrawerProps) {
                 label="Books"
                 to="/books"
                 isActive={location.pathname === '/books'}
+                 
               />
+              <NavItem icon={<PenToolIcon size={18} />} label="Authors" />
+              <NavItem icon={<BookmarkIcon size={18} />} label="Categories" />
+              <NavItem icon={<UsersIcon size={18} />} label="Users" to="/users"
+                isActive={location.pathname === '/users'}/>
+              <NavItem icon={<SettingsIcon size={18} />} label="Admin" />
             </ul>
           </nav>
         </>
