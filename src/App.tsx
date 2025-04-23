@@ -1,10 +1,10 @@
-import { useState } from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { Layout } from './component/Drawer/Layout'
-import Pages from './page'
+import { useState } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Layout } from "./component/Drawer/Layout";
+import Pages from "./page";
 
 export function App() {
-  const [isDrawerOpen, setIsDrawerOpen] = useState(true)
+  const [isDrawerOpen, setIsDrawerOpen] = useState(true);
 
   return (
     <Router>
@@ -27,9 +27,8 @@ export function App() {
           <Route path="authors" element={<Pages.Authors />} />
           <Route path="categories" element={<Pages.Categories />} />
           <Route path="users" element={<Pages.Users />} />
-          <Route path="admin" element={<Pages.Admins />} />
         </Route>
       </Routes>
     </Router>
-  )
+  );
 }
