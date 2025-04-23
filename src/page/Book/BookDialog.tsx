@@ -103,7 +103,7 @@ export function BookDialog() {
         >
           Chapters
         </Typography>
-        {chapters.map((chapter, index) => (
+        {chapters.map((_, index) => (
           <div
             key={index}
             style={{

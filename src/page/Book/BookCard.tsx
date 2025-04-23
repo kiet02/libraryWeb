@@ -12,32 +12,7 @@ import {
 } from "@mui/material";
 import { useFormContext } from "react-hook-form";
 
-const books = [
-  {
-    id: 1,
-    title: "The Great Gatsby",
-    author: "F. Scott Fitzgerald",
-    genre: "Classic",
-    image: "https://via.placeholder.com/50",
-    date: "2024-01-10",
-    chapter: [
-      { title: "chapter1", content: "oklalallaasds" },
-      { title: "chapter2", content: "oklalallaasds" },
-      { title: "chapter3", content: "oklalallaasds" },
-    ],
-  },
-  {
-    id: 2,
-    title: "To Kill a Mockingbird",
-    author: "Harper Lee",
-    genre: "Drama",
-    image: "https://via.placeholder.com/50",
-    date: "2023-11-21",
-    chapter: [],
-  },
-];
-
-export function BookCard() {
+export function BookCard({ books }: { books: TBook[] }) {
   const { setValue } = useFormContext<TData>();
 
   const handleEdit = (book: TBook) => {
