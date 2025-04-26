@@ -6,9 +6,12 @@ import {
   DialogTitle,
 } from "@mui/material";
 import { useFormContext } from "react-hook-form";
+import { useDeleteAuthor } from "./module/useDeleteAuthor";
 
-export function AuthorDelete() {
+export function AuthorDelete({ refetch }: { refetch: () => void }) {
   const { watch, setValue } = useFormContext();
+
+  const { mutate } = useDeleteAuthor();
   const open = watch("modalDelete");
   const id = watch("id");
 
@@ -18,7 +21,15 @@ export function AuthorDelete() {
 
   const confirmDelete = () => {
     console.log("Deleting author with ID:", id);
-    // Logic to handle author deletion (e.g., API call)
+    mutate(id, {
+      onSuccess: () => {
+        setValue("modalDelete", false);
+        refetch();
+      },
+      onError: (error: any) => {
+        alert("❌ Xoá thất bại: " + (error?.message || "Có lỗi xảy ra"));
+      },
+    });
     setValue("modalDelete", false);
   };
 

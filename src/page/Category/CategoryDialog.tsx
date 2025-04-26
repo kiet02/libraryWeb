@@ -9,6 +9,8 @@ import {
 } from "@mui/material";
 import { useEffect } from "react";
 import { useFormContext } from "react-hook-form";
+import { useAddCategories } from "./module/useAddCategories";
+import { useUpdateCategories } from "./module/useUpdateCategories";
 
 type Inputs = {
   name: string;
@@ -16,16 +18,45 @@ type Inputs = {
   updateCategory: boolean;
   modal: boolean;
   category: TCategory;
+  id: string | number;
 };
 
-export function CategoryDialog() {
-  const { register, setValue, handleSubmit, watch, reset } =
+export function CategoryDialog({ refetch }: { refetch: () => void }) {
+  const { register, setValue, handleSubmit, watch, reset, getValues } =
     useFormContext<Inputs>();
+  const { mutate } = useAddCategories();
+  const { mutate: mutateUpdate } = useUpdateCategories();
   const open = watch("modal");
   const updateCategory = watch("updateCategory");
+  const id = watch("id");
 
   const onSave = ({ name, description }: Inputs) => {
-    console.log(name, description);
+    if (updateCategory) {
+      mutateUpdate(
+        { id, name },
+        {
+          onSuccess: () => {
+            setValue("modal", false);
+            refetch();
+          },
+          onError: (error: any) => {
+            console.log(error, "sdsd");
+          },
+        }
+      );
+      setValue("modal", false);
+      reset();
+      return;
+    }
+    mutate(name, {
+      onSuccess: () => {
+        setValue("modal", false);
+        refetch();
+      },
+      onError: (error: any) => {
+        console.log(error, "sdsd");
+      },
+    });
     setValue("modal", false);
 
     reset();

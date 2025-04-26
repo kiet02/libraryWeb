@@ -33,9 +33,8 @@ export type TUser = {
 };
 export type TAuthor = {
   id: number;
-  image: string;
+  img: string;
   name: string;
-  bio: string;
   date: string;
   description: string;
 };

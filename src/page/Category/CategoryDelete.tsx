@@ -7,9 +7,11 @@ import {
   DialogTitle,
 } from "@mui/material";
 import { useFormContext } from "react-hook-form";
+import { useDeleteCategories } from "./module/useDeleteCategories";
 
-export function CategoryDelete() {
+export function CategoryDelete({ refetch }: { refetch: () => void }) {
   const { watch, setValue } = useFormContext();
+  const { mutate } = useDeleteCategories();
   const open = watch("modalDelete");
   const id = watch("id");
 
@@ -18,8 +20,15 @@ export function CategoryDelete() {
   };
 
   const confirmDelete = () => {
-    console.log(id);
-    setValue("modalDelete", false);
+    mutate(id, {
+      onSuccess: () => {
+        setValue("modalDelete", false);
+        refetch();
+      },
+      onError: (error: any) => {
+        alert("❌ Xoá thất bại: " + (error?.message || "Có lỗi xảy ra"));
+      },
+    });
   };
 
   return (

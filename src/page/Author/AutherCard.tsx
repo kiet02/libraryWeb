@@ -12,13 +12,15 @@ import {
 } from "@mui/material";
 import { useFormContext } from "react-hook-form";
 
-export function AuthorCard({ authors }: { authors: TAuthor[] }) {
+export function AuthorCard({ authors }: { authors?: TAuthor[] }) {
   const { setValue } = useFormContext();
 
   const handleEdit = (author: TAuthor) => {
     setValue("author", author);
     setValue("updateAuthor", true);
     setValue("modal", true);
+    setValue("id", author.id);
+    setValue("img", author.img);
   };
   const handleDelete = (author: TAuthor) => {
     setValue("id", author.id);
@@ -37,12 +39,12 @@ export function AuthorCard({ authors }: { authors: TAuthor[] }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {authors.map((author) => (
+            {authors?.map((author) => (
               <TableRow key={author.id}>
                 <TableCell>{author.id}</TableCell>
                 <TableCell>
                   <img
-                    src={author.image}
+                    src={author.img}
                     alt={author.name}
                     width={40}
                     height={40}

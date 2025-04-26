@@ -21,6 +21,7 @@ export function CategoryCard({ categories }: { categories: TCategory[] }) {
     setValue("description", category.description);
     setValue("updateCategory", true);
     setValue("modal", true);
+    setValue("id", category.id);
   };
 
   const handleDelete = (category: TCategory) => {
@@ -36,7 +37,7 @@ export function CategoryCard({ categories }: { categories: TCategory[] }) {
             <TableRow>
               <TableCell>ID</TableCell>
               <TableCell>Name</TableCell>
-              <TableCell>Description</TableCell>
+              {/* <TableCell>Description</TableCell> */}
               <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -45,7 +46,7 @@ export function CategoryCard({ categories }: { categories: TCategory[] }) {
               <TableRow key={category.id}>
                 <TableCell>{category.id}</TableCell>
                 <TableCell>{category.name}</TableCell>
-                <TableCell>{category.description}</TableCell>
+                {/* <TableCell>{category.description}</TableCell> */}
                 <TableCell align="right">
                   <IconButton onClick={() => handleEdit(category)}>
                     <Edit fontSize="small" />

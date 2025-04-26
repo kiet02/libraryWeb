@@ -1,28 +1,37 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CategoryHeader } from "./CategoryHeader"; // Đảm bảo import đúng
 import { CategoryCard } from "./CategoryCard";
 import { CategoryDialog } from "./CategoryDialog";
 import { CategoryDelete } from "./CategoryDelete";
 import { FormProvider, useForm } from "react-hook-form";
-
-const categories = [
-  { id: 1, name: "Fiction", description: "Fictional books" },
-  { id: 2, name: "Non-Fiction", description: "Non-Fictional books" },
-];
+import { useCategories } from "./module/useCategories";
+import { TCategory } from "@/help/type";
 
 export function Categories() {
-  const [filteredCategories, setFilteredCategories] = useState(categories);
+  const [filteredCategories, setFilteredCategories] = useState<TCategory[]>([]);
   const methods = useForm();
 
+  const { data, error, isLoading, refetch } = useCategories();
+
+  useEffect(() => {
+    if (Array.isArray(data)) {
+      setFilteredCategories(data);
+    } else {
+      setFilteredCategories([]);
+    }
+  }, [data]);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
   return (
     <FormProvider {...methods}>
       <CategoryHeader
-        categories={categories}
+        categories={filteredCategories}
         setFilteredCategories={setFilteredCategories}
       />
       <CategoryCard categories={filteredCategories} />
-      <CategoryDialog />
-      <CategoryDelete />
+      <CategoryDialog refetch={refetch} />
+      <CategoryDelete refetch={refetch} />
     </FormProvider>
   );
 }

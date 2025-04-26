@@ -20,9 +20,9 @@ export function BookHeader({ books, setFilteredBooks }: TBookHeader) {
         book.title.toLowerCase().includes(value.toLowerCase()) ||
         book.author.toLowerCase().includes(value.toLowerCase())
     );
+    console.log(books);
 
     setFilteredBooks(filtered);
-    console.log(filtered);
   };
 
   const addBook = () => {

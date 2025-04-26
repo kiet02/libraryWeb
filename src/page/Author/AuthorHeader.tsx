@@ -5,20 +5,25 @@ import { useState } from "react";
 import { useFormContext } from "react-hook-form";
 
 type TAuthorHeader = {
-  authors: TAuthor[];
+  filteredAuthors?: TAuthor[];
   setFilteredAuthors: (value: TAuthor[]) => void;
 };
 
-export function AuthorHeader({ authors, setFilteredAuthors }: TAuthorHeader) {
+export function AuthorHeader({
+  filteredAuthors,
+  setFilteredAuthors,
+}: TAuthorHeader) {
   const [searchTerm, setSearchTerm] = useState("");
   const { setValue, reset } = useFormContext();
 
   const handleSearch = (value: string) => {
     setSearchTerm(value);
-    const filtered = authors.filter((author) =>
-      author.name.toLowerCase().includes(value.toLowerCase())
+    const filtered = filteredAuthors?.filter(
+      (author) =>
+        author.name?.toLowerCase().includes(value?.toLowerCase()) ||
+        author.description?.toLowerCase().includes(value?.toLowerCase())
     );
-    setFilteredAuthors(filtered);
+    setFilteredAuthors(filtered || []);
   };
 
   const addAuthor = () => {
