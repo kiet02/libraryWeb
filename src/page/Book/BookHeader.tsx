@@ -1,28 +1,19 @@
 import { TextField, Button } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { useState } from "react";
-import { TBook } from "@/help/type";
 import { useFormContext } from "react-hook-form";
 
 type TBookHeader = {
-  books: TBook[]; // danh sách gốc
-  setFilteredBooks: (value: TBook[]) => void;
+  setSearch: (value: string) => void; // Thêm prop để cập nhật giá trị search
 };
 
-export function BookHeader({ books, setFilteredBooks }: TBookHeader) {
+export function BookHeader({ setSearch }: TBookHeader) {
   const [searchTerm, setSearchTerm] = useState("");
   const { setValue, reset } = useFormContext();
+
   const handleSearch = (value: string) => {
     setSearchTerm(value);
-
-    const filtered = books.filter(
-      (book) =>
-        book.title.toLowerCase().includes(value.toLowerCase()) ||
-        book.author.toLowerCase().includes(value.toLowerCase())
-    );
-    console.log(books);
-
-    setFilteredBooks(filtered);
+    setSearch(value);
   };
 
   const addBook = () => {
@@ -30,6 +21,7 @@ export function BookHeader({ books, setFilteredBooks }: TBookHeader) {
     setValue("updateBook", false);
     setValue("modal", true);
   };
+
   return (
     <div
       style={{

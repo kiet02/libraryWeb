@@ -1,49 +1,39 @@
-import { Button, Typography } from "@mui/material";
-import { Add } from "@mui/icons-material";
 import { BookCard } from "./BookCard";
 import { FormProvider, useForm } from "react-hook-form";
 import { BookDialog } from "./BookDialog";
 import { TData } from "@/help/type";
 import { BookDelete } from "./BookDelete";
 import { BookHeader } from "./BookHeader";
-import { useState } from "react";
-
-const books = [
-  {
-    id: 1,
-    title: "The Great Gatsby",
-    author: "F. Scott Fitzgerald",
-    genre: "Classic",
-    image: "https://via.placeholder.com/50",
-    date: "2024-01-10",
-    chapter: [
-      { title: "chapter1", content: "oklalallaasds" },
-      { title: "chapter2", content: "oklalallaasds" },
-      { title: "chapter3", content: "oklalallaasds" },
-    ],
-  },
-  {
-    id: 2,
-    title: "To Kill a Mockingbird",
-    author: "Harper Lee",
-    genre: "Drama",
-    image: "https://via.placeholder.com/50",
-    date: "2023-11-21",
-    chapter: [],
-  },
-];
+import { useEffect, useState } from "react";
+import { useBook } from "./module/useBook";
+import PaginationComponent from "@/component/PaginationComponent/PaginationComponent";
 
 export function Books() {
-  const [filteredBooks, setFilteredBooks] = useState(books);
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
   const methods = useForm<Omit<TData, "id">>();
-  // Replace with the actual search term
+
+  const { data, refetch, isLoading } = useBook({ page, limit: 10, search });
+
+  useEffect(() => {
+    refetch();
+  }, [search, page]);
 
   return (
     <FormProvider {...methods}>
-      <BookHeader books={books} setFilteredBooks={setFilteredBooks} />
-      <BookCard books={filteredBooks} />
-      <BookDialog />
+      <BookHeader setSearch={setSearch} />
+
+      <BookCard books={data?.books || []} />
+      <BookDialog refetch={refetch} />
       <BookDelete />
+
+      <PaginationComponent
+        page={page}
+        setPage={setPage}
+        limit={10}
+        totalItems={data?.pagination?.totalItems || 0}
+        isLoading={isLoading}
+      />
     </FormProvider>
   );
 }

@@ -1,12 +1,5 @@
-export type TBook = {
-  id: number;
-  image: string;
-  title: string;
-  author: string;
-  genre: string;
-  date: string;
-  chapter: TChapter[];
-};
+import { TBook } from "@/fetchApi/type";
+
 export type TChapter = {
   title: string;
   content: string;

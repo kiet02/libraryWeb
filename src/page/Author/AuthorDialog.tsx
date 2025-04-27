@@ -33,9 +33,7 @@ export function AuthorDialog({ refetch }: { refetch: () => void }) {
   const author = watch("author");
   const id = watch("id");
   const imgFile = watch("img");
-  console.log("====================================");
-  console.log(imgFile);
-  console.log("====================================");
+
   useEffect(() => {
     if (updateAuthor && author) {
       setValue("name", author.name);
@@ -116,8 +114,6 @@ export function AuthorDialog({ refetch }: { refetch: () => void }) {
           style={{ marginTop: 16 }}
         />
 
-        {/* Preview ảnh mới nếu đã chọn */}
-        {/* Nếu imgFile là File => preview ảnh mới */}
         {imgFile instanceof File && (
           <img
             src={URL.createObjectURL(imgFile)}

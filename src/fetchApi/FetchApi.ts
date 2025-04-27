@@ -1,9 +1,9 @@
 import { TAuthor, TCategory } from "@/help/type";
 import { Apis } from "./Apis";
-import { TGenre, TUser } from "./type";
+import { TBook, TGenre, TUser } from "./type";
 
 const tokenTest =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzQ1NTk2MTkzLCJleHAiOjE3NDU2ODI1OTN9._E8a0SOJfSlAz0upRTT4kgGFwLZbkz6V1GOFSwFtx0Y";
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzQ1NjgzMjY3LCJleHAiOjE3NDU3Njk2Njd9.rXFXsPfYqVKJZvlFmFaWLrMtRuGRR0zpkodbqnh8EF0";
 
 const commonCall = async <T>(
   api: string,
@@ -113,6 +113,63 @@ const fetchApi = {
     const response = commonCall<TAuthor[]>(Apis.deleterAuthor(id), option);
     return response;
   },
+  getAllBooks:
+    ({
+      page = 1,
+      limit = 10,
+      search = "",
+    }: {
+      page: number;
+      limit: number;
+      search: string;
+    }) =>
+    () => {
+      const url = `${
+        Apis.getBooks
+      }?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}`; // Thêm search vào URL
+
+      const option: RequestInit = {
+        method: "GET", // Phương thức GET không cần body
+        headers: {
+          "Content-Type": "application/json", // Đảm bảo kiểu dữ liệu là JSON
+        },
+      };
+
+      return commonCall<{
+        result: TBook[];
+        pagination: {
+          currentPage: number;
+          totalPages: number;
+          totalItems: number;
+          itemsPerPage: number;
+          hasNext: boolean;
+          hasPrevious: boolean;
+        };
+      }>(url, option); // Truyền URL với query parameters vào commonCall
+    },
+  addBook: (formData: FormData) => {
+    const option: RequestInit = {
+      method: "POST",
+      body: formData,
+    };
+    const response = commonCall<TBook[]>(Apis.addBook, option);
+    return response;
+  },
+  updateBook: (id: number | string, formData: FormData) => {
+    const option: RequestInit = {
+      method: "PUT",
+      body: formData,
+    };
+    const response = commonCall<TBook[]>(Apis.updateBook(id), option);
+    return response;
+  },
+  deleteBook: (id: string | number) => {
+    const option: RequestInit = {
+      method: "DELETE",
+    };
+    const response = commonCall<TBook[]>(Apis.deleteBook(id), option);
+    return response;
+  },
 };
 const ApiKeys = {
   login: "login",
@@ -122,5 +179,6 @@ const ApiKeys = {
   AllCategories: "AllCategories",
   user: "user",
   allAuthor: "author",
+  allBook: "book",
 };
 export { fetchApi, ApiKeys };

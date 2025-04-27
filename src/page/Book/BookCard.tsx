@@ -1,4 +1,5 @@
-import { TBook, TData } from "@/help/type";
+import { TBook } from "@/fetchApi/type";
+import { TData } from "@/help/type";
 import { Delete, Edit } from "@mui/icons-material";
 import {
   Card,
@@ -9,8 +10,12 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  TablePagination,
+  Button,
+  Box,
 } from "@mui/material";
 import { useFormContext } from "react-hook-form";
+import React, { useState } from "react";
 
 export function BookCard({ books }: { books: TBook[] }) {
   const { setValue } = useFormContext<TData>();
@@ -19,12 +24,15 @@ export function BookCard({ books }: { books: TBook[] }) {
     setValue("book", { ...book, chapter: book.chapter || [] });
     setValue("updateBook", true);
     setValue("modal", true);
+    setValue("id", book.id);
   };
 
   const handleDelete = (book: TBook) => {
     setValue("id", book.id);
     setValue("modalDelete", true);
   };
+
+  // Pagination states
 
   return (
     <Card style={{ marginTop: 20 }}>
@@ -42,21 +50,21 @@ export function BookCard({ books }: { books: TBook[] }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {books.map((book) => (
+            {books.map((book: TBook) => (
               <TableRow key={book.id}>
                 <TableCell>{book.id}</TableCell>
                 <TableCell>
                   <img
-                    src={book.image}
-                    alt={book.title}
+                    src={book.img}
+                    alt={book.name}
                     width={40}
                     height={40}
                     style={{ borderRadius: 4 }}
                   />
                 </TableCell>
-                <TableCell>{book.title}</TableCell>
-                <TableCell>{book.author}</TableCell>
-                <TableCell>{book.genre}</TableCell>
+                <TableCell>{book.name}</TableCell>
+                <TableCell>{book?.Author?.name}</TableCell>
+                <TableCell>{book?.Genre?.name}</TableCell>
                 <TableCell>{book.date}</TableCell>
                 <TableCell align="right">
                   <IconButton onClick={() => handleEdit(book)}>

@@ -14,5 +14,9 @@ const Apis = {
   addAuthor: `${http}/api/authors/create`,
   updateAuthor: (id: number | string) => `${http}/api/authors/${id}`,
   deleterAuthor: (id: number | string) => `${http}/api/authors/${id}`,
+  getBooks: `${http}/api/books`, // ✅ Thêm mới
+  addBook: `${http}/api/books/create`, // ✅ Thêm mới
+  updateBook: (id: string | number) => `${http}/api/books/${id}`, // ✅ Thêm mới
+  deleteBook: (id: string | number) => `${http}/api/books/${id}`, // ✅ Thêm mới
 };
 export { Apis };
