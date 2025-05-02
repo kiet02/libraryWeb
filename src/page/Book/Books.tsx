@@ -25,7 +25,7 @@ export function Books() {
 
       <BookCard books={data?.books || []} />
       <BookDialog refetch={refetch} />
-      <BookDelete />
+      <BookDelete refetch={refetch} />
 
       <PaginationComponent
         page={page}

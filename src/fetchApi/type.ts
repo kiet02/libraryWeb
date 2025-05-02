@@ -36,7 +36,8 @@ export type TGenre = {
   Books: TBook;
 };
 export type TChapter = {
-  title: string;
+  id: string | number;
+  chapter: string;
   content: string;
 };
 export type TBook = {

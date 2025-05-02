@@ -7,6 +7,7 @@ import {
   MenuItem,
   Select,
   TextField,
+  Typography,
 } from "@mui/material";
 import { useFormContext } from "react-hook-form";
 
@@ -29,11 +30,16 @@ export function SelectForm({
 }: {
   registerName: "author" | "genre";
 }) {
-  const { register, watch } = useFormContext<Inputs>();
+  const {
+    register,
+    watch,
+    formState: { errors },
+  } = useFormContext<Inputs>();
 
   const { data } = registerName === "author" ? useAuthor() : useCategories();
   const label = registerName === "author" ? "Author" : "Genre";
-  const id = registerName === "author" ? watch("author") : watch("genre");
+  const id = watch(registerName); // Use `watch` directly for the selected value
+
   return (
     <>
       <FormControl fullWidth margin="normal">
@@ -41,8 +47,8 @@ export function SelectForm({
         <Select
           labelId={`${registerName}-label`}
           label={label}
-          defaultValue={id || ""}
-          {...register(registerName)}
+          value={id || ""} // Use `value` instead of `defaultValue`
+          {...register(registerName, { required: `${label} is required` })}
         >
           <MenuItem value="">
             <em>None</em>
@@ -56,7 +62,8 @@ export function SelectForm({
         </Select>
       </FormControl>
 
-      {/* {value === "custom" && (
+      {/* Uncomment this part if you need the "custom" input */}
+      {/* {id === "custom" && (
         <TextField
           {...register(
             `custom${

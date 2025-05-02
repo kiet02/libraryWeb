@@ -1,10 +1,9 @@
 import { TAuthor, TCategory } from "@/help/type";
 import { Apis } from "./Apis";
-import { TBook, TGenre, TUser } from "./type";
+import { TBook, TChapter, TGenre, TUser } from "./type";
 
 const tokenTest =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzQ1NjgzMjY3LCJleHAiOjE3NDU3Njk2Njd9.rXFXsPfYqVKJZvlFmFaWLrMtRuGRR0zpkodbqnh8EF0";
-
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzQ2MjAxNjExLCJleHAiOjE3NDYyODgwMTF9.D2kGI4LOxXHM_BYG0_QMNy1L5o73FyzHvWxkskz4rAA";
 const commonCall = async <T>(
   api: string,
   option: RequestInit = {}
@@ -152,7 +151,7 @@ const fetchApi = {
       method: "POST",
       body: formData,
     };
-    const response = commonCall<TBook[]>(Apis.addBook, option);
+    const response = commonCall<TBook>(Apis.addBook, option);
     return response;
   },
   updateBook: (id: number | string, formData: FormData) => {
@@ -160,7 +159,7 @@ const fetchApi = {
       method: "PUT",
       body: formData,
     };
-    const response = commonCall<TBook[]>(Apis.updateBook(id), option);
+    const response = commonCall<TBook>(Apis.updateBook(id), option);
     return response;
   },
   deleteBook: (id: string | number) => {
@@ -170,7 +169,50 @@ const fetchApi = {
     const response = commonCall<TBook[]>(Apis.deleteBook(id), option);
     return response;
   },
+  getChapter: (id: string | number) => () => {
+    const option: RequestInit = {
+      method: "GET",
+      // body: JSON.stringify({name})
+    };
+    const response = commonCall<TChapter[]>(Apis.getChapter(id), option);
+    return response;
+  },
+  addChapter: (id: string | number, chapter: TChapter[]) => {
+    const option: RequestInit = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json", // Đảm bảo kiểu dữ liệu là JSON
+        Authorization: `Bearer ${tokenTest}`,
+      },
+      body: JSON.stringify(chapter), // Sử dụng test data đã chắc chắn
+    };
+    const response = commonCall<TChapter[]>(Apis.addChapter(id), option);
+    return response;
+  },
+  updateChapter: (id: number | string, chapter: TChapter[]) => {
+    const option: RequestInit = {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json", // Đảm bảo kiểu dữ liệu là JSON
+        Authorization: `Bearer ${tokenTest}`,
+      },
+      body: JSON.stringify(chapter),
+    };
+    const response = commonCall<TBook[]>(Apis.updateChapter(id), option);
+    return response;
+  },
+  deleteChapter: (id: string | number, idChapter: string | number) => {
+    const option: RequestInit = {
+      method: "DELETE",
+    };
+    const response = commonCall<TBook[]>(
+      Apis.deleteChapter(id, idChapter),
+      option
+    );
+    return response;
+  },
 };
+
 const ApiKeys = {
   login: "login",
   register: "register",
@@ -180,5 +222,6 @@ const ApiKeys = {
   user: "user",
   allAuthor: "author",
   allBook: "book",
+  allChapter: "chapter",
 };
 export { fetchApi, ApiKeys };

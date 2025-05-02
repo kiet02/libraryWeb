@@ -1,7 +1,7 @@
 import { TBook } from "@/fetchApi/type";
 
 export type TChapter = {
-  title: string;
+  chapter: string;
   content: string;
 };
 

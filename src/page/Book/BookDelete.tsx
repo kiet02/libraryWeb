@@ -7,9 +7,15 @@ import {
   DialogTitle,
 } from "@mui/material";
 import { useFormContext } from "react-hook-form";
+import { useBookDelete } from "./module/useBookDelete";
+import { useChapterDelete } from "./module/useChapterDelete";
+import { useAlert } from "@/component/Alert/AlertContext";
 
-export function BookDelete() {
+export function BookDelete({ refetch }: { refetch: () => void }) {
   const { watch, setValue } = useFormContext<TData>();
+  const { mutate } = useBookDelete();
+
+  const { showAlert } = useAlert();
   const open = watch("modalDelete");
   const id = watch("id");
 
@@ -19,6 +25,15 @@ export function BookDelete() {
 
   const confirmDelete = () => {
     console.log(id);
+    mutate(id, {
+      onSuccess: () => {
+        showAlert("Delete book successfully!", "success");
+        refetch();
+      },
+      onError: () => {
+        showAlert("Delete book error!", "error");
+      },
+    });
     setValue("modalDelete", false);
   };
 

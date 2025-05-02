@@ -18,5 +18,10 @@ const Apis = {
   addBook: `${http}/api/books/create`, // ✅ Thêm mới
   updateBook: (id: string | number) => `${http}/api/books/${id}`, // ✅ Thêm mới
   deleteBook: (id: string | number) => `${http}/api/books/${id}`, // ✅ Thêm mới
+  getChapter: (id: string | number) => `${http}/api/books/${id}/chapters`,
+  updateChapter: (id: string | number) => `${http}/api/books/${id}/chapters`,
+  addChapter: (id: string | number) => `${http}/api/books/${id}/chapters`,
+  deleteChapter: (id: string | number, idChapter: string | number) =>
+    `${http}/api/books/${id}/chapters/${idChapter}`,
 };
 export { Apis };
