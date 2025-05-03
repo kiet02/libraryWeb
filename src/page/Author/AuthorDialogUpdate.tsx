@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { TextField } from "@mui/material";
 import { useFormContext } from "react-hook-form";
 import { useUpdateAuthor } from "./module/useUpdateAuthor";
+import { useAlert } from "@/component/Alert/AlertContext";
 
 export function AuthorDialogUpdate({ refetch }: { refetch: () => void }) {
   const {
@@ -12,6 +13,7 @@ export function AuthorDialogUpdate({ refetch }: { refetch: () => void }) {
     reset,
     formState: { errors },
   } = useFormContext();
+  const { showAlert } = useAlert();
 
   const { mutate } = useUpdateAuthor();
   const author = watch("author");
@@ -36,10 +38,12 @@ export function AuthorDialogUpdate({ refetch }: { refetch: () => void }) {
       {
         onSuccess: () => {
           setValue("modal", false);
+          showAlert("Update successfully!", "success");
+
           reset();
           refetch();
         },
-        onError: (err) => console.error("Update error:", err),
+        onError: (err) => showAlert(err.message, "error"),
       }
     );
   };

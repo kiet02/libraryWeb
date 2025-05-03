@@ -1,42 +1,42 @@
 import { TAuthor, TCategory } from "@/help/type";
 import { Apis } from "./Apis";
 import { TBook, TChapter, TGenre, TUser } from "./type";
+import { AccountServer } from "@/help/AccountServer/AccountServer";
+import { handleToken } from "@/help/AccountServer/token";
+import { json } from "stream/consumers";
+const token = AccountServer.onGet().token;
 
-const tokenTest =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzQ2MjAxNjExLCJleHAiOjE3NDYyODgwMTF9.D2kGI4LOxXHM_BYG0_QMNy1L5o73FyzHvWxkskz4rAA";
 const commonCall = async <T>(
   api: string,
   option: RequestInit = {}
 ): Promise<T> => {
-  //   const account = AccountService.get();
+  const isFormData = option.body instanceof FormData;
 
+  const headers = {
+    ...option.headers,
+    ...(isFormData ? {} : { "Content-Type": "application/json" }),
+    Authorization: `Bearer ${token}`, // nếu cần
+  };
+
+  const response = await fetch(api, {
+    ...option,
+    headers,
+  });
+
+  const text = await response.text();
+  let data;
   try {
-    // if(!account?.token) {
-    //   throw new Error('Account not found')
-    // }
-    let headers = {
-      // "Content-Type": "application/json",
-      Authorization: `Bearer ${tokenTest}`,
-    };
-
-    const response = await fetch(api, {
-      headers: headers,
-      ...option,
-    });
-
-    const data = await response.json();
-    if (!response.ok || data?.success === false) {
-      // Ưu tiên thông báo từ server
-      throw new Error(data?.message || "Something went wrong");
-    }
-
-    return data;
-  } catch (error: any) {
-    if (error.message === "Network request failed") {
-      throw new Error("Network request failed");
-    }
-    throw error;
+    data = JSON.parse(text);
+  } catch {
+    console.error("Không thể parse JSON:", text);
+    throw new Error("Dữ liệu trả về không hợp lệ JSON");
   }
+
+  if (!response.ok || data?.success === false) {
+    throw new Error(data?.message || "Something went wrong");
+  }
+
+  return data;
 };
 
 const fetchApi = {
@@ -48,6 +48,14 @@ const fetchApi = {
     const response = commonCall<TUser>(Apis.login, option);
     return response;
   },
+  loginAdmin: (email: string, password: string) => {
+    const option: RequestInit = {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+    };
+    const response = commonCall<TUser>(Apis.loginAdmin, option);
+    return response;
+  },
   register: (
     name: string,
     email: string,
@@ -57,9 +65,6 @@ const fetchApi = {
   ) => {
     const option: RequestInit = {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify({ name, email, password, role, adminCode }),
     };
     const response = commonCall<TUser>(Apis.register, option);
@@ -84,10 +89,6 @@ const fetchApi = {
   AddCategories: (name: string) => {
     const option: RequestInit = {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${tokenTest}`,
-      },
       body: JSON.stringify({ name }),
     };
     const response = commonCall<TCategory[]>(Apis.addCategoris, option);
@@ -96,10 +97,7 @@ const fetchApi = {
   UpdateCategories: (id: string | number, name: string) => {
     const option: RequestInit = {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${tokenTest}`,
-      },
+
       body: JSON.stringify({ name }),
     };
     const response = commonCall<TCategory[]>(Apis.updateCategoris(id), option);
@@ -152,9 +150,6 @@ const fetchApi = {
 
       const option: RequestInit = {
         method: "GET", // Phương thức GET không cần body
-        headers: {
-          "Content-Type": "application/json", // Đảm bảo kiểu dữ liệu là JSON
-        },
       };
 
       return commonCall<{
@@ -203,10 +198,6 @@ const fetchApi = {
   addChapter: (id: string | number, chapter: TChapter[]) => {
     const option: RequestInit = {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json", // Đảm bảo kiểu dữ liệu là JSON
-        Authorization: `Bearer ${tokenTest}`,
-      },
       body: JSON.stringify(chapter), // Sử dụng test data đã chắc chắn
     };
     const response = commonCall<TChapter[]>(Apis.addChapter(id), option);
@@ -215,12 +206,9 @@ const fetchApi = {
   updateChapter: (id: number | string, chapter: TChapter[]) => {
     const option: RequestInit = {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json", // Đảm bảo kiểu dữ liệu là JSON
-        Authorization: `Bearer ${tokenTest}`,
-      },
       body: JSON.stringify(chapter),
     };
+
     const response = commonCall<TBook[]>(Apis.updateChapter(id), option);
     return response;
   },
@@ -252,10 +240,6 @@ const fetchApi = {
 
       const option: RequestInit = {
         method: "GET", // Phương thức GET không cần body
-        headers: {
-          "Content-Type": "application/json", // Đảm bảo kiểu dữ liệu là JSON
-          Authorization: `Bearer ${tokenTest}`,
-        },
       };
 
       return commonCall<{
@@ -278,10 +262,6 @@ const fetchApi = {
   ) => {
     const option: RequestInit = {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json", // Đảm bảo kiểu dữ liệu là JSON
-        Authorization: `Bearer ${tokenTest}`,
-      },
       body: JSON.stringify({ id, newRole, adminCode }),
     };
     const response = commonCall<TUser[]>(Apis.changeRole, option);

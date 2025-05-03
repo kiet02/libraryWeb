@@ -9,6 +9,7 @@ export type TProfileResponse = {
   userame: string;
 };
 export type TUser = {
+  user: any;
   email: any;
   name: string;
   id: string;

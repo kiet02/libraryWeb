@@ -1,6 +1,7 @@
 import { TextField } from "@mui/material";
 import { useFormContext } from "react-hook-form";
 import { useAddCategories } from "./module/useAddCategories";
+import { useAlert } from "@/component/Alert/AlertContext";
 
 export function CategoryDialogCreate({ refetch }: { refetch: () => void }) {
   const {
@@ -11,15 +12,17 @@ export function CategoryDialogCreate({ refetch }: { refetch: () => void }) {
     formState: { errors },
   } = useFormContext();
   const { mutate } = useAddCategories();
+  const { showAlert } = useAlert();
 
   const onSave = ({ name }: any) => {
     mutate(name, {
       onSuccess: () => {
         setValue("modal", false);
+        showAlert("Create successfully!", "success");
         refetch();
         reset();
       },
-      onError: (err) => console.error("Create error:", err),
+      onError: (err) => showAlert(err.message, "error"),
     });
   };
 

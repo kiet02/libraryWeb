@@ -1,6 +1,7 @@
 import { TextField } from "@mui/material";
 import { useFormContext } from "react-hook-form";
 import { useAddAuthor } from "./module/useAddAuthor";
+import { useAlert } from "@/component/Alert/AlertContext";
 
 export function AuthorDialogCreate({ refetch }: { refetch: () => void }) {
   const {
@@ -12,6 +13,7 @@ export function AuthorDialogCreate({ refetch }: { refetch: () => void }) {
     formState: { errors },
   } = useFormContext();
   const { mutate } = useAddAuthor();
+  const { showAlert } = useAlert();
 
   const imgFile = watch("img");
 
@@ -24,10 +26,11 @@ export function AuthorDialogCreate({ refetch }: { refetch: () => void }) {
     mutate(formData, {
       onSuccess: () => {
         setValue("modal", false);
+        showAlert("Create successfully!", "success");
         reset();
         refetch();
       },
-      onError: (err) => console.error("Create error:", err),
+      onError: (err) => showAlert(err.message, "error"),
     });
   };
 

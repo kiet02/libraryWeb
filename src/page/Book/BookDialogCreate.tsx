@@ -49,15 +49,17 @@ export function BookDialogCreate({ refetch }: { refetch: () => void }) {
           },
           {
             onSuccess: () => {
-              showAlert("Book added!", "success");
-              refetch();
-              reset();
-              remove();
-              setValue("modal", false);
+              showAlert("Create chapter successfully!", "success");
             },
             onError: () => showAlert("Create chapter fail!", "error"),
           }
         );
+        showAlert("Create chapter successfully!", "success");
+
+        refetch();
+        reset();
+        remove();
+        setValue("modal", false);
       },
       onError: (error: any) => showAlert(error.message, "error"),
     });

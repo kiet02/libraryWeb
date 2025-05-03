@@ -1,6 +1,8 @@
 const http = "http://localhost:3000";
 const Apis = {
   login: `${http}/api/users/login`,
+  loginAdmin: `${http}/api/users/loginAdmin`,
+
   register: `${http}/api/users/register`,
   getUser: `${http}/api/users/profile`,
   getChangePassword: `${http}/api/users/change-password`,

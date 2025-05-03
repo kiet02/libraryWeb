@@ -26,7 +26,7 @@ export function App() {
                 />
               }
             >
-              <Route path="dashboard" element={<Pages.Dashboard />} />
+              {/* <Route path="dashboard" element={<Pages.Dashboard />} /> */}
               <Route path="books" element={<Pages.Books />} />
               <Route path="authors" element={<Pages.Authors />} />
               <Route path="categories" element={<Pages.Categories />} />

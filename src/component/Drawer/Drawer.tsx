@@ -26,12 +26,12 @@ export function Drawer({ isOpen }: DrawerProps) {
           </div>
           <nav className="drawer-nav">
             <ul className="nav-list">
-              <NavItem
+              {/* <NavItem
                 icon={<HomeIcon size={18} />}
                 label="Dashboard"
                 to="/dashboard"
                 isActive={location.pathname === "/dashboard"}
-              />
+              /> */}
               <NavItem
                 icon={<BookIcon size={18} />}
                 label="Books"
