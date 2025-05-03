@@ -1,26 +1,19 @@
-import { TUser } from "@/help/type";
-import { Button, TextField } from "@mui/material";
+import { TextField, Button } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
 
 type TUserHeader = {
-  users: TUser[];
-  setFilteredUsers: (value: TUser[]) => void;
+  setSearch: (value: string) => void;
 };
 
-export function UserHeader({ users, setFilteredUsers }: TUserHeader) {
+export function UserHeader({ setSearch }: TUserHeader) {
   const [searchTerm, setSearchTerm] = useState("");
   const { setValue, reset } = useFormContext();
 
   const handleSearch = (value: string) => {
     setSearchTerm(value);
-    const filtered = users.filter(
-      (user) =>
-        user.username.toLowerCase().includes(value.toLowerCase()) ||
-        user.email.toLowerCase().includes(value.toLowerCase())
-    );
-    setFilteredUsers(filtered);
+    setSearch(value); // gửi giá trị lên component cha để xử lý API
   };
 
   const addUser = () => {

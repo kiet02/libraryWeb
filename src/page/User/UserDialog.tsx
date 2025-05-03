@@ -1,87 +1,37 @@
-import { TUser } from "@/help/type";
 import {
-  Button,
   Dialog,
-  DialogActions,
-  DialogContent,
   DialogTitle,
-  TextField,
+  DialogContent,
+  DialogActions,
+  Button,
 } from "@mui/material";
-import { useEffect } from "react";
 import { useFormContext } from "react-hook-form";
+import { UserDialogAddAccount } from "./UserDialogAddAccount";
+import { UserDialogChangeRole } from "./UserDialogChangeRole";
 
-type Inputs = {
-  username: string;
-  email: string;
-  password: string;
-  role: string;
-  updateUser: boolean;
-  modal: boolean;
-  user: TUser;
-};
+export function UserDialog({ refetch }: { refetch: () => void }) {
+  const { setValue, watch, reset } = useFormContext();
+  const { modal, updateUser } = watch();
 
-export function UserDialog() {
-  const { register, setValue, handleSubmit, watch, reset } =
-    useFormContext<Inputs>();
-  const open = watch("modal");
-  const updateUser = watch("updateUser");
-  const user = watch("user");
-
-  const onSave = ({ username, email, password, role }: Inputs) => {
-    console.log(username, email, password, role);
+  const handleClose = () => {
     setValue("modal", false);
+    refetch();
     reset();
   };
 
-  const onCancel = () => setValue("modal", false);
-
-  useEffect(() => {
-    if (updateUser && user) {
-      setValue("username", user.username);
-      setValue("email", user.email);
-      setValue("role", user.role);
-    }
-  }, [updateUser, user, setValue]);
-
   return (
-    <Dialog open={open} onClose={onCancel} maxWidth="sm" fullWidth>
-      <DialogTitle>{updateUser ? "Edit Role" : "Add User"}</DialogTitle>
-      <DialogContent>
-        {!updateUser && (
-          <TextField
-            {...register("username")}
-            fullWidth
-            margin="normal"
-            label="Username"
-          />
+    <Dialog open={modal} onClose={handleClose} maxWidth="sm" fullWidth>
+      <DialogTitle>{updateUser ? "Edit Role" : "Create New User"}</DialogTitle>
+      <DialogContent dividers>
+        {updateUser ? (
+          <UserDialogChangeRole refetch={refetch} />
+        ) : (
+          <UserDialogAddAccount refetch={refetch} />
         )}
-        {!updateUser && (
-          <TextField
-            {...register("email")}
-            fullWidth
-            margin="normal"
-            label="Email"
-          />
-        )}
-        {!updateUser && (
-          <TextField
-            {...register("password")}
-            fullWidth
-            margin="normal"
-            label="Password"
-            type="password"
-          />
-        )}
-        <TextField
-          {...register("role")}
-          fullWidth
-          margin="normal"
-          label="Role"
-        />
       </DialogContent>
       <DialogActions>
-        <Button onClick={onCancel}>Cancel</Button>
-        <Button variant="contained" onClick={handleSubmit(onSave)}>
+        <Button onClick={handleClose}>Cancel</Button>
+        <Button variant="contained" type="submit" form="user-form">
           Save
         </Button>
       </DialogActions>

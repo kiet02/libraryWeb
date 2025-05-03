@@ -10,12 +10,8 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  TablePagination,
-  Button,
-  Box,
 } from "@mui/material";
 import { useFormContext } from "react-hook-form";
-import React, { useState } from "react";
 
 export function BookCard({ books }: { books: TBook[] }) {
   const { setValue } = useFormContext<TData>();

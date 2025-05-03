@@ -1,5 +1,5 @@
-import { TUser } from "@/help/type";
-import { Edit } from "@mui/icons-material";
+import { TUser } from "@/fetchApi/type";
+import { Delete, Edit } from "@mui/icons-material";
 import {
   Card,
   CardContent,
@@ -11,14 +11,28 @@ import {
   TableRow,
 } from "@mui/material";
 import { useFormContext } from "react-hook-form";
+import { useUserDelete } from "./module/useUserDelete";
+import { useAlert } from "@/component/Alert/AlertContext";
 
-export function UserCard({ users }: { users: TUser[] }) {
+export function UserCard({
+  users,
+  refetch,
+}: {
+  users: TUser[];
+  refetch: () => void;
+}) {
   const { setValue } = useFormContext();
 
   const handleEdit = (user: TUser) => {
     setValue("user", user);
     setValue("updateUser", true);
     setValue("modal", true);
+    setValue("id", user.id);
+  };
+
+  const handleDelete = (user: TUser) => {
+    setValue("id", user.id);
+    setValue("modalDelete", true);
   };
 
   return (
@@ -39,13 +53,19 @@ export function UserCard({ users }: { users: TUser[] }) {
             {users.map((user) => (
               <TableRow key={user.id}>
                 <TableCell>{user.id}</TableCell>
-                <TableCell>{user.username}</TableCell>
+                <TableCell>{user.name}</TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{user.role}</TableCell>
-                <TableCell>{user.date}</TableCell>
+                <TableCell>
+                  {new Date(user.createdAt).toLocaleDateString()}
+                </TableCell>
+
                 <TableCell align="right">
                   <IconButton onClick={() => handleEdit(user)}>
                     <Edit fontSize="small" />
+                  </IconButton>
+                  <IconButton color="error" onClick={() => handleDelete(user)}>
+                    <Delete fontSize="small" />
                   </IconButton>
                 </TableCell>
               </TableRow>

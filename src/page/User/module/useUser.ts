@@ -1,7 +1,7 @@
 import { ApiKeys, fetchApi } from "@/fetchApi/FetchApi";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 
-export const useBook = ({
+export const useUser = ({
   page,
   limit,
   search,
@@ -11,10 +11,10 @@ export const useBook = ({
   search: string;
 }) => {
   const result = useQuery({
-    queryKey: [ApiKeys.allUser, page], // 👈 dùng key riêng cho books
-    queryFn: fetchApi.getAllBooks({ page, limit, search }),
+    queryKey: [ApiKeys.allBook, page], // 👈 dùng key riêng cho books
+    queryFn: fetchApi.getAllUsers({ page, limit, search }),
     select: (data) => ({
-      books: data?.result, // Dữ liệu sách
+      user: data?.result, // Dữ liệu sách
       pagination: data?.pagination, // Dữ liệu phân trang
     }),
     placeholderData: keepPreviousData,

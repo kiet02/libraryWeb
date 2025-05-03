@@ -33,8 +33,10 @@ export function AuthorCard({ authors }: { authors?: TAuthor[] }) {
           <TableHead>
             <TableRow>
               <TableCell>ID</TableCell>
+              <TableCell>image</TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Description</TableCell>
+
               <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -42,6 +44,7 @@ export function AuthorCard({ authors }: { authors?: TAuthor[] }) {
             {authors?.map((author) => (
               <TableRow key={author.id}>
                 <TableCell>{author.id}</TableCell>
+
                 <TableCell>
                   <img
                     src={author.img}
@@ -53,6 +56,7 @@ export function AuthorCard({ authors }: { authors?: TAuthor[] }) {
                 </TableCell>
                 <TableCell>{author.name}</TableCell>
                 <TableCell>{author.description}</TableCell>
+
                 <TableCell align="right">
                   <IconButton onClick={() => handleEdit(author)}>
                     <Edit fontSize="small" />

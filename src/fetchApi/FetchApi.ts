@@ -24,7 +24,13 @@ const commonCall = async <T>(
       ...option,
     });
 
-    return response.json();
+    const data = await response.json();
+    if (!response.ok || data?.success === false) {
+      // Ưu tiên thông báo từ server
+      throw new Error(data?.message || "Something went wrong");
+    }
+
+    return data;
   } catch (error: any) {
     if (error.message === "Network request failed") {
       throw new Error("Network request failed");
@@ -42,10 +48,19 @@ const fetchApi = {
     const response = commonCall<TUser>(Apis.login, option);
     return response;
   },
-  register: (name: string, email: string, password: string) => {
+  register: (
+    name: string,
+    email: string,
+    password: string,
+    role: "user" | "moderator",
+    adminCode?: string
+  ) => {
     const option: RequestInit = {
       method: "POST",
-      body: JSON.stringify({ name, email, password }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name, email, password, role, adminCode }),
     };
     const response = commonCall<TUser>(Apis.register, option);
     return response;
@@ -69,6 +84,10 @@ const fetchApi = {
   AddCategories: (name: string) => {
     const option: RequestInit = {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${tokenTest}`,
+      },
       body: JSON.stringify({ name }),
     };
     const response = commonCall<TCategory[]>(Apis.addCategoris, option);
@@ -77,6 +96,10 @@ const fetchApi = {
   UpdateCategories: (id: string | number, name: string) => {
     const option: RequestInit = {
       method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${tokenTest}`,
+      },
       body: JSON.stringify({ name }),
     };
     const response = commonCall<TCategory[]>(Apis.updateCategoris(id), option);
@@ -211,6 +234,66 @@ const fetchApi = {
     );
     return response;
   },
+
+  getAllUsers:
+    ({
+      page = 1,
+      limit = 10,
+      search = "",
+    }: {
+      page: number;
+      limit: number;
+      search: string;
+    }) =>
+    () => {
+      const url = `${
+        Apis.getAllUser
+      }?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}`; // Thêm search vào URL
+
+      const option: RequestInit = {
+        method: "GET", // Phương thức GET không cần body
+        headers: {
+          "Content-Type": "application/json", // Đảm bảo kiểu dữ liệu là JSON
+          Authorization: `Bearer ${tokenTest}`,
+        },
+      };
+
+      return commonCall<{
+        result: TUser[];
+        pagination: {
+          currentPage: number;
+          totalPages: number;
+          totalItems: number;
+          itemsPerPage: number;
+          hasNext: boolean;
+          hasPrevious: boolean;
+        };
+      }>(url, option); // Truyền URL với query parameters vào commonCall
+    },
+
+  changeRole: (
+    id: number | string,
+    newRole: "user" | "moderator",
+    adminCode: string
+  ) => {
+    const option: RequestInit = {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json", // Đảm bảo kiểu dữ liệu là JSON
+        Authorization: `Bearer ${tokenTest}`,
+      },
+      body: JSON.stringify({ id, newRole, adminCode }),
+    };
+    const response = commonCall<TUser[]>(Apis.changeRole, option);
+    return response;
+  },
+  deleteUser: (id: string) => {
+    const option: RequestInit = {
+      method: "DELETE",
+    };
+    const response = commonCall<TBook[]>(Apis.deleteUser(id), option);
+    return response;
+  },
 };
 
 const ApiKeys = {
@@ -223,5 +306,6 @@ const ApiKeys = {
   allAuthor: "author",
   allBook: "book",
   allChapter: "chapter",
+  allUser: "user",
 };
 export { fetchApi, ApiKeys };

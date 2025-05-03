@@ -18,6 +18,7 @@ export type TCategory = {
   description: string;
 };
 export type TUser = {
+  name(arg0: string, name: any): unknown;
   id: number;
   username: string;
   email: string;

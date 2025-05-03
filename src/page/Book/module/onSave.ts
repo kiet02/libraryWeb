@@ -58,7 +58,7 @@ export const useSaveBook = ({
     if (updateBook) {
       mutateUpdate(payload, {
         onSuccess: (data) => {
-          const hasExisting = chapterData?.length > 0;
+          const hasExisting = chapterData?.length && chapterData.length > 0;
           const hasNew = chapters.some((ch) => !ch.id);
 
           if (hasExisting) {

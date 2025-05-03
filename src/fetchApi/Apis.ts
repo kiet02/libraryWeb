@@ -4,6 +4,8 @@ const Apis = {
   register: `${http}/api/users/register`,
   getUser: `${http}/api/users/profile`,
   getChangePassword: `${http}/api/users/change-password`,
+  getAllUser: `${http}/api/users/allUser`, // ✅ Thêm mới
+
   getExplore: `${http}/api/books/explore/random`,
   getCategoris: (name: string) => `${http}/api/genres/${name}`,
   getAllCategoris: `${http}/api/genres/all`,
@@ -23,5 +25,7 @@ const Apis = {
   addChapter: (id: string | number) => `${http}/api/books/${id}/chapters`,
   deleteChapter: (id: string | number, idChapter: string | number) =>
     `${http}/api/books/${id}/chapters/${idChapter}`,
+  changeRole: `${http}/api/users/change-role`,
+  deleteUser: (id: number | string) => ` ${http}/api/users/delete/${id}`,
 };
 export { Apis };

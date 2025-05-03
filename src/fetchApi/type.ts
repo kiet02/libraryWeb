@@ -12,6 +12,8 @@ export type TUser = {
   email: any;
   name: string;
   id: string;
+  role: string;
+  createdAt: string;
   avatar: {
     gravatar: {
       hash: string;
