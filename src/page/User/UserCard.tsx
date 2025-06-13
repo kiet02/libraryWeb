@@ -11,12 +11,10 @@ import {
   TableRow,
 } from "@mui/material";
 import { useFormContext } from "react-hook-form";
-import { useUserDelete } from "./module/useUserDelete";
-import { useAlert } from "@/component/Alert/AlertContext";
+
 
 export function UserCard({
   users,
-  refetch,
 }: {
   users: TUser[];
   refetch: () => void;

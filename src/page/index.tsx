@@ -1,5 +1,4 @@
 export * from "./Auth/Login";
-// export * from './Auth/Register'
 export * from "./Author/Author";
 export * from "./Book/Books";
 export * from "./Category/Category";

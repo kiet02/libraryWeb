@@ -10,7 +10,6 @@ import {
 import { useFormContext } from "react-hook-form";
 import { useUserChangeRole } from "./module/useUserChangeRole";
 import { useAlert } from "@/component/Alert/AlertContext";
-import { useEffect } from "react";
 
 type Inputs = {
   id: string | number;
@@ -44,6 +43,7 @@ export function UserDialogChangeRole({ refetch }: { refetch: () => void }) {
       showAlert("Change role successfully!", "success");
       refetch();
       reset();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error("❌ Role change error:", error);
       showAlert(error.message || "Something went wrong", "error");

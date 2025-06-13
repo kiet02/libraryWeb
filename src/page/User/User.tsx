@@ -10,10 +10,10 @@ import { UserDelete } from "./UserDelete";
 export function Users() {
   const methods = useForm();
 
-  const [page, setPage] = useState(1);
+  const [page] = useState(1);
   const [search, setSearch] = useState("");
 
-  const { data, refetch, isLoading } = useUser({ page, limit: 10, search });
+  const { data, refetch } = useUser({ page, limit: 10, search });
 
   useEffect(() => {
     refetch();

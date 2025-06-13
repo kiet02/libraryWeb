@@ -29,23 +29,24 @@ export function Login() {
   const onSubmit = ({ email, password }: FormInputs) => {
     // 👉 Gọi API ở đây, ví dụ:
 
-    mutate(
-      { email, password },
-      {
-        onSuccess: (data) => {
-          AccountServer.onAdd({
-            id: data.user.id,
-            email: data.user.email,
-            role: data.user.role,
-            token: data.token,
-          });
-          navigate("/books");
-        },
-        onError: (error) => {
-          alert(error.message);
-        },
-      }
-    );
+    // mutate(
+    //   { email, password },
+    //   {
+    //     onSuccess: (data) => {
+    //       AccountServer.onAdd({
+    //         id: data.user.id,
+    //         email: data.user.email,
+    //         role: data.user.role,
+    //         token: data.token,
+    //       });
+    //       navigate("/books");
+    //     },
+    //     onError: (error) => {
+    //       alert(error.message);
+    //     },
+    //   }
+    // );
+          navigate("/Drawer");
 
     console.log(handleToken(AccountServer.onGet().token));
     // console.log(AccountServer.onGet());
@@ -67,7 +68,7 @@ export function Login() {
         <Typography variant="h5" align="center" gutterBottom>
           Login
         </Typography>
-        <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
+        <Box component="form" onSubmit={onSubmit} noValidate>
           <TextField
             label="Email"
             type="email"

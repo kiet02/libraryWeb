@@ -2,10 +2,12 @@ import { TAuthor } from "@/help/type";
 import { FormProvider, useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { AuthorHeader } from "./AuthorHeader";
-import { AuthorCard } from "./AutherCard";
+
 import { AuthorDialog } from "./AuthorDialog";
-import { AuthorDelete } from "./AutherDelete";
+
 import { useAuthor } from "./module/useAuthor";
+import { AuthorCard } from "./AuthorCard";
+import { AuthorDelete } from "./AuthorDelete";
 
 type TForm = {
   name: string;
@@ -20,7 +22,7 @@ export function Authors() {
     defaultValues: { modal: false, updateAuthor: false },
   });
   const [filteredAuthors, setFilteredAuthors] = useState<TAuthor[]>([]);
-  const { data, error, isLoading, refetch } = useAuthor();
+  const { data, refetch } = useAuthor();
 
   useEffect(() => {
     if (Array.isArray(data)) {
