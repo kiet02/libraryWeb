@@ -30,11 +30,13 @@ function DemoPageContent({
   navigate: (path: string | URL) => void;
 }) {
   return (
-    <div style={{margin:20}}>   
-      {pathname.startsWith('/books') ? (
+    <>
+    {pathname.startsWith('/books') ? (
         <Book/>
       ) : null}
-    </div>
+    </>
+      
+
 
 
   );

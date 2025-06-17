@@ -1,311 +1,139 @@
 
-import { createTheme } from '@mui/material/styles';
-import StickyNote2Icon from '@mui/icons-material/StickyNote2';
-import { AppProvider, type Navigation } from '@toolpad/core/AppProvider';
-
-import { Crud, DataModel, DataSource, DataSourceCache } from '@toolpad/core/Crud';
+import { IconButton, Typography } from '@mui/material';
+import Box from '@mui/material/Box';
+import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { DemoProvider, useDemoRouter } from '@toolpad/core/internal';
-import { Box, TextField } from '@mui/material';
+import { StickyNote2 } from '@mui/icons-material';
+import { AppProvider, Navigation } from '@toolpad/core/AppProvider';
+import { PageContainer } from '@toolpad/core/PageContainer';
+import { getPageTitle } from './module/TitlePage';
 
+
+
+
+const rows = [
+  { id: 1, lastName: 'Snow', firstName: 'Jon', age: 14 },
+  { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 31 },
+  { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 31 },
+  { id: 4, lastName: 'Stark', firstName: 'Arya', age: 11 },
+  { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
+  { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
+  { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
+  { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
+  { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
+];
 const NAVIGATION: Navigation = [
   {
     segment: 'notes',
     title: 'Notes',
-    icon: <StickyNote2Icon />,
+    icon: <StickyNote2 />,
     pattern: 'notes{/:noteId}*',
+    children:[
+      {segment:'edit',title:'Edit'}
+    ]
   },
 ];
+export function Book() {
 
-const demoTheme = createTheme({
-  cssVariables: {
-    colorSchemeSelector: 'data-toolpad-color-scheme',
-  },
-  colorSchemes: { light: true, dark: true },
-  breakpoints: {
-    values: {
-      xs: 0,
-      sm: 600,
-      md: 600,
-      lg: 1200,
-      xl: 1536,
-    },
-  },
-});
+const columns: GridColDef[] = [
+  { field: 'id', headerName: 'ID', width: 90 }, // Cột cố định
 
-export interface Note extends DataModel {
-  id: number;
-  title: string;
-  text: string;
-}
-
-let notesStore: Note[] = [
-  { id: 1, title: 'Grocery List Item', text: 'Buy more coffee.' },
-  { id: 2, title: 'Personal Goal', text: 'Finish reading the book.' },
-];
-
-export const notesDataSource: DataSource<Note> = {
- fields: [
-  { field: 'id', headerName: 'ID' },
   {
     field: 'image',
     headerName: 'Image',
-    renderFormField: ({ value, onChange }) => (
-      <Box>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (file) {
-              const reader = new FileReader();
-              reader.onloadend = () => {
-                onChange(reader.result as string); // base64 string
-              };
-              reader.readAsDataURL(file);
-            }
-          }}
-        />
-        {value && (
-          <Box mt={1}>
-            <img src={value as string} alt="Preview" style={{ maxWidth: '100%', maxHeight: 200 }} />
-          </Box>
-        )}
-      </Box>
-    ),
-  },
-  { field: 'title', headerName: 'Title', flex: 1 },
-  { field: 'author', headerName: 'author', flex: 1 },
-  { field: 'genre', headerName: 'author', flex: 1 },
-
-
-  {
-    field: 'text',
-    headerName: 'Text',
-    flex: 1,
-    renderFormField: ({ value, onChange, error }) => (
-      <TextField
-        multiline
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        error={!!error}
-        helperText={error}
-        sx={{ minHeight: 150 }}
-        rows={6}
-        fullWidth
+    renderCell: (params) => (
+      <img
+        src={params.value}
+        alt="thumb"
+        style={{ width: 60, height: 60, objectFit: 'cover', borderRadius: 4 }}
       />
     ),
-  },
-  
-],
-
-
-  getMany: async ({ paginationModel, filterModel, sortModel }) => {
-    // Simulate loading delay
-    await new Promise((resolve) => {
-      setTimeout(resolve, 750);
-    });
-
-    let processedNotes = [...notesStore];
-
-    // Apply filters (demo only)
-    if (filterModel?.items?.length) {
-      filterModel.items.forEach(({ field, value, operator }) => {
-        if (!field || value == null) {
-          return;
-        }
-
-        processedNotes = processedNotes.filter((note) => {
-          const noteValue = note[field];
-
-          switch (operator) {
-            case 'contains':
-              return String(noteValue)
-                .toLowerCase()
-                .includes(String(value).toLowerCase());
-            case 'equals':
-              return noteValue === value;
-            case 'startsWith':
-              return String(noteValue)
-                .toLowerCase()
-                .startsWith(String(value).toLowerCase());
-            case 'endsWith':
-              return String(noteValue)
-                .toLowerCase()
-                .endsWith(String(value).toLowerCase());
-            case '>':
-              return (noteValue as number) > value;
-            case '<':
-              return (noteValue as number) < value;
-            default:
-              return true;
-          }
-        });
-      });
-    }
-
-    // Apply sorting
-    if (sortModel?.length) {
-      processedNotes.sort((a, b) => {
-        for (const { field, sort } of sortModel) {
-          if ((a[field] as number) < (b[field] as number)) {
-            return sort === 'asc' ? -1 : 1;
-          }
-          if ((a[field] as number) > (b[field] as number)) {
-            return sort === 'asc' ? 1 : -1;
-          }
-        }
-        return 0;
-      });
-    }
-
-    // Apply pagination
-    const start = paginationModel.page * paginationModel.pageSize;
-    const end = start + paginationModel.pageSize;
-    const paginatedNotes = processedNotes.slice(start, end);
-
-    return {
-      items: paginatedNotes,
-      itemCount: processedNotes.length,
-    };
+    width: 100, // hoặc giữ cố định nếu ảnh
   },
 
-  getOne: async (noteId) => {
-    // Simulate loading delay
-    await new Promise((resolve) => {
-      setTimeout(resolve, 750);
-    });
-
-    const noteToShow = notesStore.find((note) => note.id === Number(noteId));
-
-    if (!noteToShow) {
-      throw new Error('Note not found');
-    }
-    return noteToShow;
+  { field: 'firstName', headerName: 'First Name', flex: 1 },
+  { field: 'lastName', headerName: 'Last Name', flex: 1 },
+  { field: 'age', headerName: 'Age', flex: 1 },
+  {
+    field: 'fullName',
+    headerName: 'Full Name',
+    valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
+    flex: 1,
   },
-
-  createOne: async (data) => {
-    // Simulate loading delay
-    await new Promise((resolve) => {
-      setTimeout(resolve, 750);
-    });
-
-    const newNote = {
-      id: notesStore.reduce((max, note) => Math.max(max, note.id), 0) + 1,
-      ...data,
-    } as Note;
-
-    notesStore = [...notesStore, newNote];
-
-    return newNote;
+  {
+    field: 'actions',
+    headerName: 'Actions',
+    sortable: false,
+    filterable: false,
+    renderCell: (params) => (
+      <Box display="flex" gap={1}>
+        <IconButton onClick={() => handleEdit(params.row)} size="small">
+          <EditIcon fontSize="small" />
+        </IconButton>
+        <IconButton onClick={() => handleDelete(params.row)} size="small">
+          <DeleteIcon fontSize="small" />
+        </IconButton>
+      </Box>
+    ),
+    width: 120, // giữ cố định để không bị bóp nút
   },
-
-  updateOne: async (noteId, data) => {
-    // Simulate loading delay
-    await new Promise((resolve) => {
-      setTimeout(resolve, 750);
-    });
-
-    let updatedNote: Note | null = null;
-
-    notesStore = notesStore.map((note) => {
-      if (note.id === Number(noteId)) {
-        updatedNote = { ...note, ...data };
-        return updatedNote;
-      }
-      return note;
-    });
-
-    if (!updatedNote) {
-      throw new Error('Note not found');
-    }
-    return updatedNote;
-  },
-
-  deleteOne: async (noteId) => {
-    // Simulate loading delay
-    await new Promise((resolve) => {
-      setTimeout(resolve, 750);
-    });
-
-    notesStore = notesStore.filter((note) => note.id !== Number(noteId));
-  },
-
-  validate: (formValues) => {
-    let issues: { message: string; path: [keyof Note] }[] = [];
-
-    if (!formValues.title) {
-      issues = [...issues, { message: 'Title is required', path: ['title'] }];
-    }
-
-    if (formValues.title && formValues.title.length < 3) {
-      issues = [
-        ...issues,
-        {
-          message: 'Title must be at least 3 characters long',
-          path: ['title'],
-        },
-      ];
-    }
-
-    if (!formValues.text) {
-      issues = [...issues, { message: 'Text is required', path: ['text'] }];
-    }
-
-    return { issues };
-  },
-};
-
-const notesCache = new DataSourceCache();
-
-function matchPath(pattern: string, pathname: string): string | null {
-  const regex = new RegExp(`^${pattern.replace(/:[^/]+/g, '([^/]+)')}$`);
-  const match = pathname.match(regex);
-  return match ? match[1] : null;
-}
-
-interface DemoProps {
-  /**
-   * Injected by the documentation to work in an iframe.
-   * Remove this when copying and pasting into your project.
-   */
-  window?: () => Window;
-}
-
-export  function Book(props: DemoProps) {
-  const { window } = props;
+];
 
   const router = useDemoRouter('/notes');
+  function handleEdit(row:GridRenderCellParams) {
+  console.log('Sửa:', row);
+  router.navigate(`/notes/${row.id}/edit`);
+  // hoặc navigate đến /edit/:id
+}
 
-  // Remove this const when copying and pasting into your project.
-  const demoWindow = window !== undefined ? window() : undefined;
+function handleDelete(row:GridRenderCellParams) {
+  console.log('Xoá:', row);
+  // xác nhận rồi xoá bằng API
+}
 
-  const showNoteId = matchPath('/notes/:noteId', router.pathname);
-  const editNoteId = matchPath('/notes/:noteId/edit', router.pathname);
+function DemoPageContent({
+  pathname,
+}: {
+  pathname: string;
+  navigate: (path: string | URL) => void;
+}) {
+  if (pathname.endsWith('/edit')) {
+    const id = pathname.split('/')[2]; // /notes/4/edit => id = 4
+    return <Typography variant="h6">Editing user with ID: {id}</Typography>;
+  }
 
   return (
-    // Remove this provider when copying and pasting into your project.
-    <DemoProvider window={demoWindow}>
-      <AppProvider
-        navigation={NAVIGATION}
-        router={router}
-        theme={demoTheme}
-        window={demoWindow}
-      >
-          <Crud<Note>
-            dataSource={notesDataSource}
-            dataSourceCache={notesCache}
-            rootPath="/notes"
-            initialPageSize={10}
-            defaultValues={{ title: 'New note' }}
-            pageTitles={{
-              create: 'New Note',
-              edit: `Note ${editNoteId} - Edit`,
-              show: `Note ${showNoteId}`,
-            }}
-            
-          />
+    <DataGrid
+      rows={rows}
+      columns={columns}
+      initialState={{
+        pagination: {
+          paginationModel: {
+            pageSize: 5,
+          },
+        }}
+      }
+      pageSizeOptions={[5]}
+      disableRowSelectionOnClick
+    />
+  );
+}
 
-      </AppProvider>
+  return (
+    <DemoProvider>
+      <AppProvider
+      navigation={NAVIGATION}
+      router={router}>
+    <Box sx={{ height: 400, width: '100%',padding:5 }}>
+       <PageContainer  title={getPageTitle(router.pathname)}
+         />
+      <DemoPageContent pathname={router.pathname} navigate={router.navigate} />
+  
+    </Box>
+
+    </AppProvider>
     </DemoProvider>
   );
 }
